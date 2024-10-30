@@ -11,9 +11,7 @@ class Ingredient(models.Model):
     fats = models.FloatField()
     carbohydrates = models.FloatField()
 
-    has_animal_proteins = models.BooleanField(
-        blank=False, null=False
-    )
+    has_animal_proteins = models.BooleanField()
 
     def __str__(self):
         return self.title
