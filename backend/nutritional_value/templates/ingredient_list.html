@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Список ингредиентов</h1>
+
+    {% for ingredient in ingredients %}
+        <div>
+            <p><a href="./{{ ingredient.slug }}">{{ ingredient.title }}</a></p>
+        </div>
+        {% empty %}
+        <div>
+            Нет данных
+        </div>
+    {% endfor %}
+
+{% endblock %}

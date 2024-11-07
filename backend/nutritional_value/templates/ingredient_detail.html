@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Ингредент: {{ ingredient.title }}</h1>
+    {% if ingredient.description %}
+        <div>
+            <p>
+                Описание: {{ ingredient.description }}
+            </p>
+        </div>
+    {% endif %}
+    <div>
+        <p>Калорийность: {{ ingredient.calorie_content }} </p>
+    </div>
+    <div>
+        <p>Белки: {{ ingredient.proteins }} </p>
+        <p>Жиры: {{ ingredient.fats }} </p>
+        <p>Углеводы: {{ ingredient.carbohydrates }} </p>
+    </div>
+    <div>
+        {% if ingredient.has_animal_proteins %}
+            <p>Животного происхождения</p>
+        {% else %}
+            <p>Растительного происхождения</p>        
+        {% endif %}
+    </div>
+
+{% endblock %}

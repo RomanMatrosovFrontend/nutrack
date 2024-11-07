@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
 from .forms import IngredientForm
 from .models import Ingredient
@@ -24,3 +24,13 @@ def add_ingredient(request):
     else:
         form = IngredientForm()
     return render(request, 'add_ingredient.html', {'form': form})
+
+
+def ingredient_list(request):
+    ingredients = Ingredient.objects.all()
+    return render(request, 'ingredient_list.html', {'ingredients': ingredients})
+
+
+def ingredient_detail(request, ingredient_slug):
+    ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
+    return render(request, 'ingredient_detail.html', {'ingredient': ingredient})
