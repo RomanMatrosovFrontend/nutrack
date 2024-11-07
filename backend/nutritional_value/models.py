@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Ingredient(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
 
