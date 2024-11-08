@@ -20,9 +20,18 @@
         <div class="col-sm-2">
           {% block sidebar %}
           <ul class="sidebar-nav">
-            <li><a href="{% url 'index' %}">Главная</a></li>
-            <li><a href="{% url 'ingredient_list' %}">Ингредиенты</a></li>
-            <li><a href="{% url 'add_ingredient' %}">Создать ингредиент</a></li>
+            <div>
+              {% if user.is_authenticated %}
+                <li>{{ user.username }}</li>
+              {% else %}
+                <li><a href="{% url 'registration' %}">Зарегистрироваться</a></li>
+              {% endif %}
+            </div>
+            <div>
+              <li><a href="{% url 'index' %}">Главная</a></li>
+              <li><a href="{% url 'ingredient_list' %}">Ингредиенты</a></li>
+              <li><a href="{% url 'add_ingredient' %}">Создать ингредиент</a></li>
+            </div>
           </ul>
           {% endblock %}
         </div>

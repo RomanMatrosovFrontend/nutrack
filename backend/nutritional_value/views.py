@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.shortcuts import get_object_or_404, render, redirect
 
 from .forms import IngredientForm
@@ -7,7 +9,8 @@ from .models import Ingredient
 def index(request):
     """Функция отображения главной страницы"""
     context = {
-        'num_ingredients': Ingredient.objects.all().count()
+        'num_ingredients': Ingredient.objects.all().count(),
+        'user': request.user
     }
     return render(request, 'index.html', context,)
 
@@ -23,17 +26,25 @@ def add_ingredient(request):
             return render(request, 'add_ingredient.html', {'form': form})
     else:
         form = IngredientForm()
-    return render(request, 'add_ingredient.html', {'form': form})
+    return render(
+        request, 'add_ingredient.html', {'form': form, 'user': request.user}
+    )
 
 
 def ingredient_list(request):
     ingredients = Ingredient.objects.all()
-    return render(request, 'ingredient_list.html', {'ingredients': ingredients})
+    return render(
+        request, 'ingredient_list.html',
+        {'ingredients': ingredients, 'user': request.user}
+    )
 
 
 def ingredient_detail(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
-    return render(request, 'ingredient_detail.html', {'ingredient': ingredient})
+    return render(
+        request, 'ingredient_detail.html',
+        {'ingredient': ingredient, 'user': request.user}
+    )
 
 
 def ingredient_edit(request, ingredient_slug):
@@ -51,7 +62,7 @@ def ingredient_edit(request, ingredient_slug):
 
     return render(
         request, 'ingredient_edit.html',
-        {'form': form, 'ingredient': ingredient}
+        {'form': form, 'ingredient': ingredient, 'user': request.user}
     )
 
 
@@ -63,5 +74,6 @@ def ingredient_delete(request, ingredient_slug):
         return redirect('ingredient_list')
 
     return render(
-        request, 'ingredient_confirm_delete.html', {'ingredient': ingredient}
+        request, 'ingredient_confirm_delete.html',
+        {'ingredient': ingredient, 'user': request.user}
     )
