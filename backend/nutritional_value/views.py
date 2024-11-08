@@ -1,5 +1,3 @@
-from functools import wraps
-
 from django.shortcuts import get_object_or_404, render, redirect
 
 from .forms import IngredientForm
