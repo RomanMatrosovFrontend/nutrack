@@ -5,7 +5,7 @@
 
     {% for ingredient in ingredients %}
         <div>
-            <p><a href="./{{ ingredient.slug }}">{{ ingredient.title }}</a></p>
+            <p><a href="{% url 'ingredient_edit' ingredient.slug %}">{{ ingredient.title }}</a></p>
         </div>
         {% empty %}
         <div>

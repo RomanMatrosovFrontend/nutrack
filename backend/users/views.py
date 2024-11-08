@@ -1,8 +1,10 @@
-from django.contrib.auth import login, authenticate
-from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, get_user_model, login
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
 
+
+User = get_user_model()
 
 def registration(request):
     if request.method == 'POST':
@@ -28,3 +30,11 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
+
+
+def profile_details(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(
+        request, 'users/profile.html',
+        {'user': user}
+    )
