@@ -12,7 +12,7 @@ def registration(request):
             return redirect('index')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration.html', {'form': form})
+    return render(request, 'users/registration.html', {'form': form})
 
 
 def login_view(request):
@@ -27,4 +27,4 @@ def login_view(request):
                 return redirect('index')
     else:
         form = CustomAuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
