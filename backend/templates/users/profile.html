@@ -1,14 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Пользователь {{ user.username }}</title>
-</head>
-<body>
-    <h2>Пользователь {{ user.username }}</h2>
-    <p>Email: {{ user.email }}</p>
-    {% if user == request.user or request.user.is_superuser %}
-        <p><a href="{% url 'edit_profile' user.username %}">Редактировать</a></p>
-    {% endif %}
-</body>
-</html>
+{% extends "common/base.html" %}
+
+{% block content %}
+  <h1>Пользователь {{ user.username }}</h1>
+  <p>Email: {{ user.email }}</p>
+  {% if user == request.user or request.user.is_superuser %}
+    <p><a href="{% url 'edit_profile' user.username %}">Редактировать</a></p>
+  {% endif %}
+{% endblock %}
