@@ -1,7 +1,10 @@
 from django.contrib.auth import authenticate, get_user_model, login
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CustomAuthenticationForm, CustomUserCreationForm
+from .forms import (
+    CustomAuthenticationForm, CustomUserCreationForm,
+    EmailEditForm, PasswordEditForm,
+)
 
 
 User = get_user_model()
@@ -38,3 +41,26 @@ def profile_details(request, username):
         request, 'users/profile.html',
         {'user': user}
     )
+
+
+def edit_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    if request.method == 'POST':
+        if 'email' in request.POST:
+            form = EmailEditForm(instance=user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('profile', username=username)
+        elif 'password' in request.POST:
+            form = PasswordEditForm(instance=user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('login')
+    else:
+        email_form = EmailEditForm(instance=request.user)
+        password_form = PasswordEditForm()
+
+    return render(request, 'users/profile_edit.html', {
+        'email_form': email_form,
+        'password_form': password_form,
+    })
