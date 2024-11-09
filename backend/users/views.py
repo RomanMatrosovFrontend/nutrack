@@ -9,6 +9,7 @@ from .forms import (
 
 User = get_user_model()
 
+
 def registration(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

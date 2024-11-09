@@ -21,11 +21,15 @@ def add_ingredient(request):
             ingredient = form.save()
             return redirect('ingredient_list')
         else:
-            return render(request, 'nutritional_value/add_ingredient.html', {'form': form})
+            return render(
+                request, 'nutritional_value/add_ingredient.html',
+                {'form': form}
+            )
     else:
         form = IngredientForm()
     return render(
-        request, 'nutritional_value/add_ingredient.html', {'form': form, 'user': request.user}
+        request, 'nutritional_value/add_ingredient.html',
+        {'form': form}
     )
 
 
@@ -33,7 +37,7 @@ def ingredient_list(request):
     ingredients = Ingredient.objects.all()
     return render(
         request, 'nutritional_value/ingredient_list.html',
-        {'ingredients': ingredients, 'user': request.user}
+        {'ingredients': ingredients}
     )
 
 
@@ -41,7 +45,7 @@ def ingredient_detail(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
     return render(
         request, 'nutritional_value/ingredient_detail.html',
-        {'ingredient': ingredient, 'user': request.user}
+        {'ingredient': ingredient}
     )
 
 
@@ -60,7 +64,7 @@ def ingredient_edit(request, ingredient_slug):
 
     return render(
         request, 'nutritional_value/ingredient_edit.html',
-        {'form': form, 'ingredient': ingredient, 'user': request.user}
+        {'form': form, 'ingredient': ingredient}
     )
 
 
@@ -73,5 +77,5 @@ def ingredient_delete(request, ingredient_slug):
 
     return render(
         request, 'nutritional_value/ingredient_confirm_delete.html',
-        {'ingredient': ingredient, 'user': request.user}
+        {'ingredient': ingredient}
     )
