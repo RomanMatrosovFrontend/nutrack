@@ -11,6 +11,13 @@ from .forms import (
 User = get_user_model()
 
 
+def custom_forbidden_view(request, error_message='Нет прав для доступа'):
+    return render(
+        request, 'common/403.html',
+        status=403, context={'error_message': error_message}
+    )
+
+
 def registration(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -51,6 +58,8 @@ def profile_details(request, username):
 @login_required
 def edit_profile(request, username):
     user = get_object_or_404(User, username=username)
+    if request.user != user and not request.user.is_superuser:
+        return custom_forbidden_view(request)
     if request.method == 'POST':
         if 'email' in request.POST:
             form = EmailEditForm(instance=user, data=request.POST)
@@ -63,10 +72,11 @@ def edit_profile(request, username):
                 form.save()
                 return redirect('login')
     else:
-        email_form = EmailEditForm(instance=request.user)
+        email_form = EmailEditForm(instance=user)
         password_form = PasswordEditForm()
 
     return render(request, 'users/profile_edit.html', {
         'email_form': email_form,
         'password_form': password_form,
+        'user': user
     })

@@ -7,7 +7,7 @@
 <body>
     <h2>Пользователь {{ user.username }}</h2>
     <p>Email: {{ user.email }}</p>
-    {% if user == request.user %}
+    {% if user == request.user or request.user.is_superuser %}
         <p><a href="{% url 'edit_profile' user.username %}">Редактировать</a></p>
     {% endif %}
 </body>
