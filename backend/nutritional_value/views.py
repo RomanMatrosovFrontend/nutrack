@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import IngredientForm
@@ -13,6 +14,7 @@ def index(request):
     return render(request, 'nutritional_value/index.html', context,)
 
 
+@login_required
 def add_ingredient(request):
     """Страница создания ингредиента"""
     if request.method == 'POST':
@@ -49,6 +51,7 @@ def ingredient_detail(request, ingredient_slug):
     )
 
 
+@login_required
 def ingredient_edit(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
 
@@ -68,6 +71,7 @@ def ingredient_edit(request, ingredient_slug):
     )
 
 
+@login_required
 def ingredient_delete(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
 

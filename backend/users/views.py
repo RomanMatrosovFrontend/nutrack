@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import (
@@ -44,6 +45,7 @@ def profile_details(request, username):
     )
 
 
+@login_required
 def edit_profile(request, username):
     user = get_object_or_404(User, username=username)
     if request.method == 'POST':
