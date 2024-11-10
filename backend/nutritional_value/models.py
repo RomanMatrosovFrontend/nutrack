@@ -28,6 +28,8 @@ class AmountPerDay(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     grams = models.FloatField()
 
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     class Meta:
         unique_together = ('date', 'ingredient')
 
