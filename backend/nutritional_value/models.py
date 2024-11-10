@@ -30,8 +30,5 @@ class AmountPerDay(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('date', 'ingredient')
-
     def __str__(self):
         return f"{self.date} - {self.ingredient.title} - {self.grams}g"
