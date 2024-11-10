@@ -27,7 +27,7 @@
     <div>
         <p>Автор: <a href="{% url 'profile' ingredient.author.username %}">{{ ingredient.author }}</a> </p>
     </div>
-    {% if request.user == ingredient.author %}
+    {% if request.user == ingredient.author or request.user.is_superuser %}
         <div>
             <a href="{% url 'ingredient_edit' ingredient.slug %}">Изменить</a>
             <a href="{% url 'ingredient_delete' ingredient.slug %}">Удалить</a>

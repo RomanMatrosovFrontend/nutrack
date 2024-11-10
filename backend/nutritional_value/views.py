@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from users.views import custom_forbidden_view
+
 from .forms import IngredientForm
 from .models import Ingredient
 
@@ -55,7 +57,8 @@ def ingredient_detail(request, ingredient_slug):
 @login_required
 def ingredient_edit(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
-
+    if request.user != ingredient.author and not request.user.is_superuser:
+        return custom_forbidden_view(request)
     if request.method == 'POST':
         form = IngredientForm(request.POST, instance=ingredient)
         if form.is_valid():
