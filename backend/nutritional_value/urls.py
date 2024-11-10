@@ -20,5 +20,12 @@ urlpatterns = [
         'ingredients/<slug:ingredient_slug>/delete/',
         views.ingredient_delete, name='ingredient_delete'
     ),
-
+    path(
+        'add_amount_per_day/', views.add_amount_per_day,
+        name='add_amount_per_day'
+    ),
+    path(
+        'my_amount_per_day_list/', views.my_amount_per_day_list,
+        name='my_amount_per_day_list'
+    ),
 ]

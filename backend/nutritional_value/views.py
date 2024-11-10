@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.views import custom_forbidden_view
-from .forms import IngredientForm
-from .models import Ingredient
+from .forms import AmountPerDayForm, IngredientForm
+from .models import AmountPerDay, Ingredient
 
 
 def index(request):
@@ -85,4 +85,34 @@ def ingredient_delete(request, ingredient_slug):
     return render(
         request, 'nutritional_value/ingredient_confirm_delete.html',
         {'ingredient': ingredient}
+    )
+
+
+@login_required
+def add_amount_per_day(request):
+    if request.method == 'POST':
+        form = AmountPerDayForm(request.POST)
+        if form.is_valid():
+            form.instance.author = request.user
+            form.save()
+            return redirect('my_amount_per_day_list')
+        else:
+            return render(
+                request, 'nutritional_value/add_amount_per_day.html',
+                {'form': form}
+            )
+    else:
+        form = AmountPerDayForm()
+    return render(
+        request, 'nutritional_value/add_amount_per_day.html',
+        {'form': form}
+    )
+
+
+@login_required
+def my_amount_per_day_list(request):
+    amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
+    return render(
+        request, 'nutritional_value/my_amount_per_day_list.html',
+        {'amounts': amounts}
     )

@@ -34,4 +34,4 @@ class AmountPerDay(models.Model):
         unique_together = ('date', 'ingredient')
 
     def __str__(self):
-        return f"{self.date} - {self.ingredient.name} - {self.grams}g"
+        return f"{self.date} - {self.ingredient.title} - {self.grams}g"

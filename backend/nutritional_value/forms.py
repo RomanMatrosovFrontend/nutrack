@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ingredient
+from .models import AmountPerDay, Ingredient
 
 
 class IngredientForm(forms.ModelForm):
@@ -33,3 +33,17 @@ class IngredientForm(forms.ModelForm):
         if not slug.isalnum():
             raise forms.ValidationError("Slug must be alphanumeric.")
         return slug
+
+
+class AmountPerDayForm(forms.ModelForm):
+    class Meta:
+        model = AmountPerDay
+        fields = ['date', 'ingredient', 'grams']
+        labels = {
+            'date': 'Дата',
+            'ingredient': 'Ингредиент',
+            'grams': 'Количество грамм',
+        }
+        widgets = {'date': forms.DateInput(attrs={
+            'type': 'date',
+        })}
