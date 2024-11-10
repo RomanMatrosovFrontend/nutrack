@@ -21,7 +21,7 @@
           {% block sidebar %}
           <ul class="sidebar-nav">
             <div>
-              {% if user.is_authenticated %}
+              {% if request.user.is_authenticated %}
                 <li><a href="{% url 'profile' request.user.username %}">{{ request.user.username }}</a></li>
                 <li><a href="{% url 'logout' %}">Выйти из аккаунта</a></li>
               {% else %}

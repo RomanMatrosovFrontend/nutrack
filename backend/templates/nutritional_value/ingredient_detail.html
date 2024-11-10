@@ -25,7 +25,12 @@
         {% endif %}
     </div>
     <div>
-        <a href="./edit/">Изменить</a>
-        <a href="./delete/">Удалить</a>
+        <p>Автор: <a href="{% url 'profile' ingredient.author.username %}">{{ ingredient.author }}</a> </p>
     </div>
+    {% if request.user == ingredient.author %}
+        <div>
+            <a href="{% url 'ingredient_edit' ingredient.slug %}">Изменить</a>
+            <a href="{% url 'ingredient_delete' ingredient.slug %}">Удалить</a>
+        </div>
+    {% endif %}
 {% endblock %}

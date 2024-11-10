@@ -20,6 +20,7 @@ def add_ingredient(request):
     if request.method == 'POST':
         form = IngredientForm(request.POST)
         if form.is_valid():
+            form.instance.author = request.user
             ingredient = form.save()
             return redirect('ingredient_list')
         else:
