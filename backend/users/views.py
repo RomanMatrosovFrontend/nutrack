@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from core.views import custom_forbidden_view
 from .forms import (
     CustomAuthenticationForm, CustomUserCreationForm,
     EmailEditForm, PasswordEditForm,
@@ -9,13 +10,6 @@ from .forms import (
 
 
 User = get_user_model()
-
-
-def custom_forbidden_view(request, error_message='Нет прав для доступа'):
-    return render(
-        request, 'common/403.html',
-        status=403, context={'error_message': error_message}
-    )
 
 
 def registration(request):

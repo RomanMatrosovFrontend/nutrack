@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from users.views import custom_forbidden_view
-
+from core.views import custom_forbidden_view
 from .forms import IngredientForm
 from .models import Ingredient
 
