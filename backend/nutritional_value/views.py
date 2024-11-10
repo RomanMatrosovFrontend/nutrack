@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.views import custom_forbidden_view
-from .forms import AmountPerDayForm, IngredientForm
+from .forms import AmountPerDayForm, FilterAmountPerDayForm, IngredientForm
 from .models import AmountPerDay, Ingredient
 
 
@@ -111,8 +111,11 @@ def add_amount_per_day(request):
 
 @login_required
 def my_amount_per_day_list(request):
+    form = FilterAmountPerDayForm(request.GET or None)
     amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
+    if form.is_valid() and form.cleaned_data['date']:
+        amounts = amounts.filter(date=form.cleaned_data['date'])
     return render(
         request, 'nutritional_value/my_amount_per_day_list.html',
-        {'amounts': amounts}
+        {'amounts': amounts, 'form': form}
     )

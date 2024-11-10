@@ -47,3 +47,12 @@ class AmountPerDayForm(forms.ModelForm):
         widgets = {'date': forms.DateInput(attrs={
             'type': 'date',
         })}
+
+
+class FilterAmountPerDayForm(forms.Form):
+    date = forms.DateField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'type': 'date'
+        })
+    )

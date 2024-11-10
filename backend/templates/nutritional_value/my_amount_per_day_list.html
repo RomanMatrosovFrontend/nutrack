@@ -3,6 +3,10 @@
 {% block content %}
   <h1>Мой список употребленных продуктов</h1>
   <div>
+    <form method="GET">
+        {{ form.as_p }}
+        <button type="submit">Фильтровать по дате</button>
+    </form>
     <ul>
     {% for amount in amounts %}
             <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }}</li>
