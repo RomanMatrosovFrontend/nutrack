@@ -33,4 +33,28 @@
   <div>
     <a href="{% url 'add_amount_per_day' %}">Добавить</a>
   </div>
+
+  <div>
+    <table class="table">
+      <caption>
+        Суммарно КБЖУ
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">К</th>
+          <th scope="col">Б</th>
+          <th scope="col">Ж</th>
+          <th scope="col">У</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ total_nutrients.total_calories_value }}</td>
+          <td>{{ total_nutrients.total_proteins_value }}</td>
+          <td>{{ total_nutrients.total_fats_value }}</td>
+          <td>{{ total_nutrients.total_carbohydrates_value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

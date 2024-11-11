@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import  F, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.views import custom_forbidden_view
@@ -8,6 +9,7 @@ from .forms import (
     FilterIngredientForm, IngredientForm
 )
 from .models import AmountPerDay, Ingredient
+from .utils import get_total_nutrients
 
 
 def index(request):
@@ -132,9 +134,15 @@ def my_amount_per_day_list(request):
     paginator = Paginator(amounts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    total_nutrients = get_total_nutrients(amounts)
+
     return render(
         request, 'nutritional_value/my_amount_per_day_list.html',
-        {'page_obj': page_obj, 'form': form}
+        {
+            'page_obj': page_obj, 'form': form,
+            'total_nutrients': total_nutrients
+        }
     )
 
 
