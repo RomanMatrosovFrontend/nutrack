@@ -3,7 +3,10 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.views import custom_forbidden_view
-from .forms import AmountPerDayForm, FilterAmountPerDayForm, IngredientForm
+from .forms import (
+    AmountPerDayForm, FilterAmountPerDayForm,
+    FilterIngredientForm, IngredientForm
+)
 from .models import AmountPerDay, Ingredient
 
 
@@ -39,13 +42,19 @@ def add_ingredient(request):
 
 
 def ingredient_list(request):
+    form = FilterIngredientForm(request.GET or None)
     ingredients = Ingredient.objects.all()
+    if form.is_valid() and form.cleaned_data['author']:
+        ingredients = ingredients.filter(author=form.cleaned_data['author'])
+    query = request.GET.get('search')
+    if query:
+        ingredients = ingredients.filter(title__icontains=query)
     paginator = Paginator(ingredients, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(
         request, 'nutritional_value/ingredient_list.html',
-        {'page_obj': page_obj}
+        {'page_obj': page_obj, 'form': form}
     )
 
 
@@ -117,11 +126,11 @@ def add_amount_per_day(request):
 def my_amount_per_day_list(request):
     form = FilterAmountPerDayForm(request.GET or None)
     amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
-    paginator = Paginator(amounts, 2)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     if form.is_valid() and form.cleaned_data['date']:
         amounts = amounts.filter(date=form.cleaned_data['date'])
+    paginator = Paginator(amounts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(
         request, 'nutritional_value/my_amount_per_day_list.html',
         {'page_obj': page_obj, 'form': form}

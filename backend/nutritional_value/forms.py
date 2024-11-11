@@ -1,5 +1,10 @@
 from django import forms
+from django.contrib.auth import get_user_model
+
 from .models import AmountPerDay, Ingredient
+
+
+User = get_user_model()
 
 
 class IngredientForm(forms.ModelForm):
@@ -47,6 +52,12 @@ class AmountPerDayForm(forms.ModelForm):
         widgets = {'date': forms.DateInput(attrs={
             'type': 'date',
         })}
+
+
+class FilterIngredientForm(forms.Form):
+    author = forms.ModelChoiceField(
+        queryset=User.objects.all(), required=False, label='Автор'
+    )
 
 
 class FilterAmountPerDayForm(forms.Form):

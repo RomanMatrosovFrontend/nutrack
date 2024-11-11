@@ -2,7 +2,14 @@
 
 {% block content %}
   <h1>Список ингредиентов</h1>
-
+  <form method="GET">
+    {{ form.as_p }}
+    <p>
+      <label for="search">Название:</label>
+      <input type="text" name="search" placeholder="Введите часть названия" value="{{ request.GET.search }}" />
+    </p>
+    <button type="submit">Фильтровать</button>
+  </form>
   {% for ingredient in page_obj %}
     <div>
       <p>
