@@ -9,7 +9,7 @@
     </form>
     <ul>
       {% for amount in page_obj %}
-        <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }}</li>
+        <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
       {% empty %}
         <div>Нет данных</div>
       {% endfor %}

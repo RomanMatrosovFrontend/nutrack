@@ -28,4 +28,8 @@ urlpatterns = [
         'my_amount_per_day_list/', views.my_amount_per_day_list,
         name='my_amount_per_day_list'
     ),
+    path(
+        'amount_per_day_delete/<int:id>/delete/',
+        views.amount_per_day_delete, name='amount_per_day_delete'
+    ),
 ]

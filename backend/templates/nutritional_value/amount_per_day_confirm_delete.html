@@ -1,0 +1,15 @@
+{% extends "common/base.html" %}
+
+{% block content %}
+  <h1>Удалить запись {{ amount_per_day.id }}?</h1>
+  <div>
+    <p>Дата: {{ amount_per_day.date }}</p>
+    <p>Ингредиент: {{ amount_per_day.ingredient }}</p>
+    <p>Количество грамм: {{ amount_per_day.gram }}</p>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+    <a href="{% url 'my_amount_per_day_list' %}">Отмена</a>
+</form>
+{% endblock %}

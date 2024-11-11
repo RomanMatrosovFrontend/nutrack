@@ -135,3 +135,17 @@ def my_amount_per_day_list(request):
         request, 'nutritional_value/my_amount_per_day_list.html',
         {'page_obj': page_obj, 'form': form}
     )
+
+
+@login_required
+def amount_per_day_delete(request, id):
+    amount_per_day = get_object_or_404(AmountPerDay, id=id)
+
+    if request.method == 'POST':
+        amount_per_day.delete()
+        return redirect('my_amount_per_day_list')
+
+    return render(
+        request, 'nutritional_value/amount_per_day_confirm_delete.html',
+        {'amount_per_day': amount_per_day}
+    )
