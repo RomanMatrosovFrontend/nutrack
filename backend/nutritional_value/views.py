@@ -117,9 +117,12 @@ def add_amount_per_day(request):
 def my_amount_per_day_list(request):
     form = FilterAmountPerDayForm(request.GET or None)
     amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
+    paginator = Paginator(amounts, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     if form.is_valid() and form.cleaned_data['date']:
         amounts = amounts.filter(date=form.cleaned_data['date'])
     return render(
         request, 'nutritional_value/my_amount_per_day_list.html',
-        {'amounts': amounts, 'form': form}
+        {'page_obj': page_obj, 'form': form}
     )
