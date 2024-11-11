@@ -1,23 +1,21 @@
-{% extends "common/base.html" %}
+{% extends 'common/base.html' %}
 
 {% block content %}
   <h1>Мой список употребленных продуктов</h1>
   <div>
     <form method="GET">
-        {{ form.as_p }}
-        <button type="submit">Фильтровать по дате</button>
+      {{ form.as_p }}
+      <button type="submit">Фильтровать по дате</button>
     </form>
     <ul>
-    {% for amount in amounts %}
-            <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }}</li>
-        {% empty %}
-        <div>
-            Нет данных
-        </div>
-    {% endfor %}
+      {% for amount in amounts %}
+        <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }}</li>
+      {% empty %}
+        <div>Нет данных</div>
+      {% endfor %}
     </ul>
   </div>
   <div>
-      <a href="{% url 'add_amount_per_day' %}">Добавить</a>
+    <a href="{% url 'add_amount_per_day' %}">Добавить</a>
   </div>
 {% endblock %}

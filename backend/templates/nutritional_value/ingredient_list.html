@@ -1,16 +1,31 @@
-{% extends "common/base.html" %}
+{% extends 'common/base.html' %}
 
 {% block content %}
   <h1>Список ингредиентов</h1>
 
-    {% for ingredient in ingredients %}
-        <div>
-            <p><a href="{% url 'ingredient_detail' ingredient.slug %}">{{ ingredient.title }}</a></p>
-        </div>
-        {% empty %}
-        <div>
-            Нет данных
-        </div>
-    {% endfor %}
+  {% for ingredient in page_obj %}
+    <div>
+      <p>
+        <a href="{% url 'ingredient_detail' ingredient.slug %}">{{ ingredient.title }}</a>
+      </p>
+    </div>
+  {% empty %}
+    <div>Нет данных</div>
+  {% endfor %}
 
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+      {% endif %}
+
+      <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
 {% endblock %}
