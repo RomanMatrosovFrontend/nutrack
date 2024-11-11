@@ -90,7 +90,8 @@ def ingredient_edit(request, ingredient_slug):
 @login_required
 def ingredient_delete(request, ingredient_slug):
     ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
-
+    if request.user != ingredient.author and not request.user.is_superuser:
+        return custom_forbidden_view(request)
     if request.method == 'POST':
         ingredient.delete()
         return redirect('ingredient_list')
@@ -140,7 +141,8 @@ def my_amount_per_day_list(request):
 @login_required
 def amount_per_day_delete(request, id):
     amount_per_day = get_object_or_404(AmountPerDay, id=id)
-
+    if request.user != amount_per_day.author and not request.user.is_superuser:
+        return custom_forbidden_view(request)
     if request.method == 'POST':
         amount_per_day.delete()
         return redirect('my_amount_per_day_list')
