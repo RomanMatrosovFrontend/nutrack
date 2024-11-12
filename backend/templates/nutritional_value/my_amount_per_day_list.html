@@ -38,10 +38,11 @@
   <div>
     <table class="table">
       <caption>
-        Суммарно КБЖУ
+        Подсчеты КБЖУ по фильтру
       </caption>
       <thead>
         <tr>
+          <th scope="col"></th>
           <th scope="col">К</th>
           <th scope="col">Б</th>
           <th scope="col">Ж</th>
@@ -50,29 +51,14 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ total_nutrients.total_calories }}</td>
-          <td>{{ total_nutrients.total_proteins }}</td>
-          <td>{{ total_nutrients.total_fats }}</td>
-          <td>{{ total_nutrients.total_carbohydrates }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div>
-    <table class="table">
-      <caption>
-        Средние КБЖУ
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">К</th>
-          <th scope="col">Б</th>
-          <th scope="col">Ж</th>
-          <th scope="col">У</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
+          <tr>
+            <td><b>Суммарно КБЖУ</b></td>
+            <td>{{ total_nutrients.total_calories }}</td>
+            <td>{{ total_nutrients.total_proteins }}</td>
+            <td>{{ total_nutrients.total_fats }}</td>
+            <td>{{ total_nutrients.total_carbohydrates }}</td>
+          </tr>
+          <td><b>Средине значения КБЖУ</b></td>
           <td>{{ total_nutrients.average_calories }}</td>
           <td>{{ total_nutrients.average_proteins }}</td>
           <td>{{ total_nutrients.average_fats }}</td>
@@ -81,4 +67,5 @@
       </tbody>
     </table>
   </div>
+
 {% endblock %}
