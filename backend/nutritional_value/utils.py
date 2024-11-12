@@ -3,10 +3,14 @@ from django.db.models import Count, F, Sum
 
 def get_total_nutrients(objects):
     total_data = objects.aggregate(
-        total_calories=Sum(F('ingredient__calorie_content') * F('grams')),
-        total_proteins=Sum(F('ingredient__proteins') * F('grams')),
-        total_fats=Sum(F('ingredient__fats') * F('grams')),
-        total_carbohydrates=Sum(F('ingredient__carbohydrates') * F('grams')),
+        total_calories=Sum(
+            F('ingredient__calorie_content') * F('grams') / 100
+        ),
+        total_proteins=Sum(F('ingredient__proteins') * F('grams') / 100),
+        total_fats=Sum(F('ingredient__fats') * F('grams') / 100),
+        total_carbohydrates=Sum(
+            F('ingredient__carbohydrates') * F('grams') / 100
+        ),
         total_count=Count('id')
     )
 
