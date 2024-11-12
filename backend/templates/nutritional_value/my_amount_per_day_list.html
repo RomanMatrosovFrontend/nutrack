@@ -10,7 +10,7 @@
     <h2>Найдено по запросу: {{ total_nutrients.total_count }}</h2>
     <ul>
       {% for amount in page_obj %}
-        <li>{{ amount.date }} {{ amount.ingredient }} {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
+        <li>{{ amount.date }} <a href="{% url 'ingredient_detail' amount.ingredient.slug %}" target="_blank">{{ amount.ingredient }}</a> {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
       {% empty %}
         <div>Нет данных</div>
       {% endfor %}
@@ -50,10 +50,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ total_nutrients.total_calories_value }}</td>
-          <td>{{ total_nutrients.total_proteins_value }}</td>
-          <td>{{ total_nutrients.total_fats_value }}</td>
-          <td>{{ total_nutrients.total_carbohydrates_value }}</td>
+          <td>{{ total_nutrients.total_calories }}</td>
+          <td>{{ total_nutrients.total_proteins }}</td>
+          <td>{{ total_nutrients.total_fats }}</td>
+          <td>{{ total_nutrients.total_carbohydrates }}</td>
         </tr>
       </tbody>
     </table>
@@ -73,10 +73,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ total_nutrients.average_calories_value }}</td>
-          <td>{{ total_nutrients.average_proteins_value }}</td>
-          <td>{{ total_nutrients.average_fats_value }}</td>
-          <td>{{ total_nutrients.average_carbohydrates_value }}</td>
+          <td>{{ total_nutrients.average_calories }}</td>
+          <td>{{ total_nutrients.average_proteins }}</td>
+          <td>{{ total_nutrients.average_fats }}</td>
+          <td>{{ total_nutrients.average_carbohydrates }}</td>
         </tr>
       </tbody>
     </table>
