@@ -1,7 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import F, Sum
-from django.db.models.functions import TruncMonth, TruncWeek
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.views import custom_forbidden_view
@@ -10,7 +8,7 @@ from .forms import (
     FilterIngredientForm, IngredientForm
 )
 from .models import AmountPerDay, Ingredient
-from .utils import get_total_nutrients
+from .utils import get_dynamics_of_changes, get_total_nutrients
 
 
 def index(request):
@@ -29,7 +27,7 @@ def add_ingredient(request):
         form = IngredientForm(request.POST)
         if form.is_valid():
             form.instance.author = request.user
-            ingredient = form.save()
+            form.save()
             return redirect('ingredient_list')
         else:
             return render(
@@ -129,7 +127,7 @@ def add_amount_per_day(request):
 @login_required
 def my_amount_per_day_list(request):
     form = FilterAmountPerDayForm(request.GET or None)
-    amounts = AmountPerDay.objects.filter(author=request.user)
+    amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
     context = {'form': form}
     dynamics_of_changes = None
     cut_size = 'day'
@@ -140,55 +138,25 @@ def my_amount_per_day_list(request):
             amounts = amounts.filter(date__lte=form.cleaned_data['date_stop'])
         cut_size = form.cleaned_data['cut_size']
 
-    if cut_size == 'month':
-        dynamics_of_changes = amounts.values(month=TruncMonth('date')).annotate(
-            total_calories=Sum(
-                F('ingredient__calorie_content') * F('grams') / 100
-            ),
-            total_proteins=Sum(F('ingredient__proteins') * F('grams') / 100),
-            total_fats=Sum(F('ingredient__fats') * F('grams') / 100),
-            total_carbohydrates=Sum(
-                F('ingredient__carbohydrates') * F('grams') / 100
-            )
-        ).order_by('month')
-    elif cut_size == 'week':
-        dynamics_of_changes = amounts.values(week=TruncWeek('date')).annotate(
-            total_calories=Sum(
-                F('ingredient__calorie_content') * F('grams') / 100
-            ),
-            total_proteins=Sum(F('ingredient__proteins') * F('grams') / 100),
-            total_fats=Sum(F('ingredient__fats') * F('grams') / 100),
-            total_carbohydrates=Sum(
-                F('ingredient__carbohydrates') * F('grams') / 100
-            )
-        ).order_by('week')
-    else:
-        dynamics_of_changes = amounts.values('date').annotate(
-            total_calories=Sum(
-                F('ingredient__calorie_content') * F('grams') / 100
-            ),
-            total_proteins=Sum(F('ingredient__proteins') * F('grams') / 100),
-            total_fats=Sum(F('ingredient__fats') * F('grams') / 100),
-            total_carbohydrates=Sum(
-                F('ingredient__carbohydrates') * F('grams') / 100
-            )
-        ).order_by('date')
-
     paginator = Paginator(amounts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context['page_obj'] = page_obj
 
-    total_nutrients = get_total_nutrients(amounts)
-    context['total_count'] = total_nutrients['total_count']
+    total = get_total_nutrients(amounts)
+    dynamics_of_changes = get_dynamics_of_changes(cut_size, amounts)
+    context['total_count'] = total['total_count']
     if context['total_count'] > 0:
-        periods_count = len(dynamics_of_changes)
         context['dynamics_of_changes'] = dynamics_of_changes
-        context['average_calories'] = total_nutrients['total_calories'] / periods_count
-        context['average_proteins'] = total_nutrients['total_proteins'] / periods_count
-        context['average_fats'] = total_nutrients['total_fats'] / periods_count
-        context['average_carbohydrates'] = total_nutrients['total_carbohydrates'] / periods_count
         context['cut_size'] = cut_size
+        periods_count = len(dynamics_of_changes)
+        context['average_calories'] = total['total_calories'] / periods_count
+        context['average_proteins'] = total['total_proteins'] / periods_count
+        context['average_fats'] = total['total_fats'] / periods_count
+        context['average_carbohydrates'] = (
+            total['total_carbohydrates'] /
+            periods_count
+        )
 
     return render(
         request, 'nutritional_value/my_amount_per_day_list.html', context
