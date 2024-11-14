@@ -22,9 +22,4 @@ def get_total_nutrients(objects):
         ]
     }
 
-    averages = {}
-    for key, value in totals.items():
-        average_key = f'average_{key.split("_")[1]}'
-        averages[average_key] = value / total_count if total_count else 0
-
-    return {**totals, **averages, 'total_count': total_count}
+    return {**totals, 'total_count': total_count}

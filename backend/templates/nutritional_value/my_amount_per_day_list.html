@@ -5,67 +5,87 @@
   <div>
     <form method="GET">
       {{ form.as_p }}
-      <button type="submit">Фильтровать по дате</button>
+      <button type="submit">Применить</button>
     </form>
-    <h2>Найдено по запросу: {{ total_nutrients.total_count }}</h2>
-    <ul>
-      {% for amount in page_obj %}
-        <li>{{ amount.date }} <a href="{% url 'ingredient_detail' amount.ingredient.slug %}" target="_blank">{{ amount.ingredient }}</a> {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
-      {% empty %}
-        <div>Нет данных</div>
-      {% endfor %}
-    </ul>
-    <div class="pagination">
-      <span class="step-links">
-        {% if page_obj.has_previous %}
-          <a href="?page=1">&laquo; Первая</a>
-          <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
-        {% endif %}
-
-        <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.</span>
-
-        {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
-        {% endif %}
-      </span>
+    <h2>Найдено записей по запросу: {{ total_count }}</h2>
+    <div>
+      <a href="{% url 'add_amount_per_day' %}">Добавить запись</a>
     </div>
-  </div>
-  <div>
-    <a href="{% url 'add_amount_per_day' %}">Добавить</a>
-  </div>
-
-  <div>
-    <table class="table">
-      <caption>
-        Подсчеты КБЖУ по фильтру
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">К</th>
-          <th scope="col">Б</th>
-          <th scope="col">Ж</th>
-          <th scope="col">У</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>Суммарно КБЖУ</b></td>
-          <td>{{ total_nutrients.total_calories }}</td>
-          <td>{{ total_nutrients.total_proteins }}</td>
-          <td>{{ total_nutrients.total_fats }}</td>
-          <td>{{ total_nutrients.total_carbohydrates }}</td>
-        </tr>
-        <tr>
-          <td><b>Средине значения КБЖУ</b></td>
-          <td>{{ total_nutrients.average_calories }}</td>
-          <td>{{ total_nutrients.average_proteins }}</td>
-          <td>{{ total_nutrients.average_fats }}</td>
-          <td>{{ total_nutrients.average_carbohydrates }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-{% endblock %}
+    {% if total_count > 0 %}
+      <ul>
+          {% for amount in page_obj %}
+            <li>{{ amount.date }} <a href="{% url 'ingredient_detail' amount.ingredient.slug %}" target="_blank">{{ amount.ingredient }}</a> {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
+          {% endfor %}
+        </ul>
+        <div class="pagination">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+            {% endif %}
+            
+            <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.</span>
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+      
+      <div>
+        <h2>Среднее значение в {% if cut_size == 'month' %}месяц{% elif cut_size == 'week' %}неделю{% else %}день{% endif %} за период</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">К</th>
+              <th scope="col">Б</th>
+              <th scope="col">Ж</th>
+              <th scope="col">У</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>{{ average_calories }}</td>
+            <td>{{ average_proteins }}</td>
+            <td>{{ average_fats }}</td>
+            <td>{{ average_carbohydrates }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h2>Динамика изменений по {% if cut_size == 'month' %}месяцам{% elif cut_size == 'week' %}неделям{% else %}дням{% endif %}</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>К</th>
+            <th>Б</th>
+            <th>Ж</th>
+            <th>У</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in dynamics_of_changes %}
+          <tr>
+            <td>{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}</td>
+            <td>{{ entry.total_calories }}</td>
+            <td>{{ entry.total_proteins }}</td>
+            <td>{{ entry.total_fats }}</td>
+            <td>{{ entry.total_carbohydrates }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="2">Нет данных</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div>Нет данных</div>
+      {% endif %}
+    </div>
+  
+  {% endblock %}
+  

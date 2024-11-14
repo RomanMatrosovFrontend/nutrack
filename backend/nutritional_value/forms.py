@@ -61,9 +61,26 @@ class FilterIngredientForm(forms.Form):
 
 
 class FilterAmountPerDayForm(forms.Form):
-    date = forms.DateField(
+    CUT_SIZE_OPTIONS = [
+        ('day', 'по дням'),
+        ('week', 'по неделям'),
+        ('month', 'по месяцам'),
+    ]
+    cut_size = forms.ChoiceField(
+        choices=CUT_SIZE_OPTIONS, label="Выберите вариант группировки",
+        initial=CUT_SIZE_OPTIONS[0][0]
+    )
+    date_start = forms.DateField(
         required=False,
         widget=forms.TextInput(attrs={
             'type': 'date'
-        })
+        }),
+        label="От"
+    )
+    date_stop = forms.DateField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'type': 'date'
+        }),
+        label="По (включительно)"
     )
