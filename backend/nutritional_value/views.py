@@ -8,7 +8,9 @@ from .forms import (
     FilterIngredientForm, IngredientForm
 )
 from .models import AmountPerDay, Ingredient
-from .utils import get_dynamics_of_changes, get_total_nutrients
+from .utils import (
+    get_dynamics_of_changes, get_total_nutrients
+)
 
 
 def index(request):

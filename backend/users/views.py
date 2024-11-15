@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -74,3 +74,9 @@ def edit_profile(request, username):
         'password_form': password_form,
         'user': user
     })
+
+
+def logout_view(request):
+    logout(request)
+    next_page = request.GET.get('next', 'index')
+    return redirect(next_page)
