@@ -1,6 +1,79 @@
 {% extends 'common/base.html' %}
 
+{% block extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function create_chart(id, values, label) {
+        const ctx = document.getElementById(id).getContext('2d');
+        const data = {
+            labels: [{% for entry in dynamics_of_changes %}"{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}",{% endfor %}],
+            datasets: [{
+                label: label,
+                data: values,
+                borderWidth: 1
+            }]
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function createPieChart() {
+        const ctx = document.getElementById('nutritionPieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Белки', 'Жиры', 'Углеводы'],
+                datasets: [{
+                    data: [{{ average_proteins }}, {{ average_fats }}, {{ average_carbohydrates }}],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Среднее соотношение БЖУ'
+                    }
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing charts
+        create_chart('caloriesChart', [{% for entry in dynamics_of_changes %}{{ entry.total_calories }},{% endfor %}], 'Калории');
+        create_chart('proteinsChart', [{% for entry in dynamics_of_changes %}{{ entry.total_proteins }},{% endfor %}], 'Белки');
+        create_chart('fatsChart', [{% for entry in dynamics_of_changes %}{{ entry.total_fats }},{% endfor %}], 'Жиры');
+        create_chart('carbohydratesChart', [{% for entry in dynamics_of_changes %}{{ entry.total_carbohydrates }},{% endfor %}], 'Углеводы');
+        // New pie chart
+        createPieChart();
+    });
+
+  </script>
+{% endblock %}
+
 {% block content %}
+
   <h1>Мой список употребленных продуктов</h1>
   <div>
     <form method="GET">
@@ -36,56 +109,108 @@
       
       <div>
         <h2>Среднее значение в {% if cut_size == 'month' %}месяц{% elif cut_size == 'week' %}неделю{% else %}день{% endif %} за период</h2>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">К</th>
-              <th scope="col">Б</th>
-              <th scope="col">Ж</th>
-              <th scope="col">У</th>
-            </tr>
-          </thead>
-          <tbody>
-            <td>{{ average_calories }}</td>
-            <td>{{ average_proteins }}</td>
-            <td>{{ average_fats }}</td>
-            <td>{{ average_carbohydrates }}</td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="row">
+          <div class="col-md-8">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">К</th>
+                  <td>{{ average_calories|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Б</th>
+                  <td>{{ average_proteins|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Ж</th>
+                  <td>{{ average_fats|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">У</th>
+                  <td>{{ average_carbohydrates|floatformat:2 }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-4">
+            <div class="chart-container">
+              <h3 class="chart-title">Среднее соотношение БЖУ</h3>
+              <canvas id="nutritionPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <h2>Динамика изменений по {% if cut_size == 'month' %}месяцам{% elif cut_size == 'week' %}неделям{% else %}дням{% endif %}</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Дата</th>
-            <th>К</th>
-            <th>Б</th>
-            <th>Ж</th>
-            <th>У</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for entry in dynamics_of_changes %}
-          <tr>
-            <td>{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}</td>
-            <td>{{ entry.total_calories }}</td>
-            <td>{{ entry.total_proteins }}</td>
-            <td>{{ entry.total_fats }}</td>
-            <td>{{ entry.total_carbohydrates }}</td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="2">Нет данных</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
+      
+      <div class="mb-4">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>К</th>
+              <th>Б</th>
+              <th>Ж</th>
+              <th>У</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in dynamics_of_changes %}
+            <tr>
+              <td>{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}</td>
+              <td>{{ entry.total_calories|floatformat:2 }}</td>
+              <td>{{ entry.total_proteins|floatformat:2 }}</td>
+              <td>{{ entry.total_fats|floatformat:2 }}</td>
+              <td>{{ entry.total_carbohydrates|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5">Нет данных</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h3 class="chart-title">Калории</h3>
+            <div class="chart-canvas-wrapper">
+              <canvas id="caloriesChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h3 class="chart-title">Белки</h3>
+            <div class="chart-canvas-wrapper">
+              <canvas id="proteinsChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h3 class="chart-title">Жиры</h3>
+            <div class="chart-canvas-wrapper">
+              <canvas id="fatsChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h3 class="chart-title">Углеводы</h3>
+            <div class="chart-canvas-wrapper">
+              <canvas id="carbohydratesChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
         <div>Нет данных</div>
       {% endif %}
     </div>
-  
+
   {% endblock %}
-  
