@@ -43,14 +43,19 @@ def login_view(request):
 
 def profile_details(request, username):
     user = get_object_or_404(User, username=username)
+    ingredients = user.ingredient_set.all().count()
+    amount_per_days = user.amountperday_set.all().count()
     return render(
         request, 'users/profile.html',
-        {'user': user}
+        {
+            'profile': user, 'ingredients': ingredients,
+            'amount_per_days': amount_per_days
+        }
     )
 
 
 @login_required
-def edit_profile(request, username):
+def profile_edit(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user and not request.user.is_superuser:
         return custom_forbidden_view(request)

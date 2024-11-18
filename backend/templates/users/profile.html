@@ -46,11 +46,11 @@
             <ul class="list-unstyled">
               <li class="mb-2">
                 <span class="profile-label">Добавлено ингредиентов:</span>
-                <span class="profile-value">{{ profile.ingredients.count }}</span>
+                <span class="profile-value">{{ ingredients }}</span>
               </li>
               <li class="mb-2">
                 <span class="profile-label">Записей в дневнике:</span>
-                <span class="profile-value">{{ profile.amount_per_days.count }}</span>
+                <span class="profile-value">{{ amount_per_days }}</span>
               </li>
             </ul>
           </div>
@@ -69,7 +69,7 @@
 
   {% if user == profile %}
   <div class="action-buttons">
-    <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+    <a href="{% url 'profile_edit' profile.username %}" class="btn btn-primary">
       <i class="bi bi-pencil-fill me-1"></i>Редактировать профиль
     </a>
   </div>
