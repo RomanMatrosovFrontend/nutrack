@@ -75,7 +75,7 @@
 {% block content %}
   <h1 class="mb-4">Мой список употребленных продуктов</h1>
   <div class="mb-4">
-    <form method="GET" class="row g-3">
+    <form method="GET" class="filter-form row g-3">
       {% for field in form %}
         <div class="col-auto d-flex align-items-end mt-0">
           <div class="form-group mb-0">
@@ -84,7 +84,7 @@
           </div>
         </div>
       {% endfor %}
-      <div class="col-auto d-flex align-items-end">
+      <div class="col-auto d-flex align-items-end mt-0">
         <button type="submit" class="btn btn-primary">Применить</button>
       </div>
     </form>

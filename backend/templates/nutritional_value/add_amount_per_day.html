@@ -1,10 +1,28 @@
 {% extends "common/base.html" %}
 
 {% block content %}
-  <h1>Добавить количество употребленного ингредиента за день</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Сохранить</button>
-  </form>
+<div class="container">
+  <h1 class="mb-4">Добавить количество употребленного ингредиента за день</h1>
+  <div class="mb-4">
+    <form method="post" class="add-amount-form row g-3 align-items-end">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="col-auto">
+          <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+              <div class="invalid-feedback d-block">
+                {{ field.errors|join:", " }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
