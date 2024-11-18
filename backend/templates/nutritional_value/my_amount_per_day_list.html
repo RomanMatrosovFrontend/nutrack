@@ -73,48 +73,124 @@
 {% endblock %}
 
 {% block content %}
-
-  <h1>Мой список употребленных продуктов</h1>
-  <div>
-    <form method="GET">
-      {{ form.as_p }}
-      <button type="submit">Применить</button>
+  <h1 class="mb-4">Мой список употребленных продуктов</h1>
+  <div class="mb-4">
+    <form method="GET" class="row g-3">
+      {% for field in form %}
+        <div class="col-auto d-flex align-items-end mt-0">
+          <div class="form-group mb-0">
+            {{ field.label_tag }}
+            {{ field }}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="col-auto d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">Применить</button>
+      </div>
     </form>
-    <h2>Найдено записей по запросу: {{ total_count }}</h2>
-    <div>
-      <a href="{% url 'add_amount_per_day' %}">Добавить запись</a>
-    </div>
-    {% if total_count > 0 %}
-      <ul>
-          {% for amount in page_obj %}
-            <li>{{ amount.date }} <a href="{% url 'ingredient_detail' amount.ingredient.slug %}" target="_blank">{{ amount.ingredient }}</a> {{ amount.grams }} <a href="{% url 'amount_per_day_delete' amount.id %}">Удалить</a></li>
-          {% endfor %}
-        </ul>
-        <div class="pagination">
-          <span class="step-links">
+  </div>
+
+  {% if total_count > 0 %}
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="records" aria-selected="true">
+          Найдено записей по запросу: {{ total_count }}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="average-tab" data-bs-toggle="tab" data-bs-target="#average" type="button" role="tab" aria-controls="average" aria-selected="false">
+          Среднее значение в {% if cut_size == 'month' %}месяц{% elif cut_size == 'week' %}неделю{% else %}день{% endif %} за период
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="dynamics-tab" data-bs-toggle="tab" data-bs-target="#dynamics" type="button" role="tab" aria-controls="dynamics" aria-selected="false">
+          Динамика изменений по {% if cut_size == 'month' %}месяцам{% elif cut_size == 'week' %}неделям{% else %}дням{% endif %}
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <!-- Records Tab -->
+      <div class="tab-pane fade show active" id="records" role="tabpanel" aria-labelledby="records-tab">
+        <div>
+          <a href="{% url 'add_amount_per_day' %}" class="btn btn-primary mb-3">Добавить запись</a>
+        </div>
+        <div class="table-responsive mb-4">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Продукт</th>
+                <th>Количество</th>
+                <th class="text-end">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for amount in page_obj %}
+                <tr>
+                  <td>{{ amount.date }}</td>
+                  <td>
+                    <a href="{% url 'ingredient_detail' amount.ingredient.slug %}" target="_blank" class="text-decoration-none">
+                      {{ amount.ingredient }}
+                    </a>
+                  </td>
+                  <td>{{ amount.grams }} г</td>
+                  <td class="text-end">
+                    <a href="{% url 'amount_per_day_delete' amount.id %}" class="btn btn-outline-danger btn-sm">
+                      <i class="bi bi-trash"></i>
+                      Удалить
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; Первая</a>
-            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+              <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                  <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
             {% endif %}
             
-            <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.</span>
+            <li class="page-item active">
+              <span class="page-link">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+              </span>
+            </li>
             
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                  <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+              </li>
             {% endif %}
-          </span>
-        </div>
+          </ul>
+        </nav>
       </div>
-      
-      <div>
-        <h2>Среднее значение в {% if cut_size == 'month' %}месяц{% elif cut_size == 'week' %}неделю{% else %}день{% endif %} за период</h2>
+
+      <!-- Average Values Tab -->
+      <div class="tab-pane fade" id="average" role="tabpanel" aria-labelledby="average-tab">
         <div class="row">
           <div class="col-md-8">
             <table class="table">
               <tbody>
                 <tr>
-                  <th scope="row">К</th>
+                  <th scope="row" class="fit-content">К</th>
                   <td>{{ average_calories|floatformat:2 }}</td>
                 </tr>
                 <tr>
@@ -135,82 +211,82 @@
           <div class="col-md-4">
             <div class="chart-container">
               <h3 class="chart-title">Среднее соотношение БЖУ</h3>
-              <canvas id="nutritionPieChart"></canvas>
+              <div class="chart-canvas-wrapper">
+                <canvas id="nutritionPieChart"></canvas>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div>
-      <h2>Динамика изменений по {% if cut_size == 'month' %}месяцам{% elif cut_size == 'week' %}неделям{% else %}дням{% endif %}</h2>
-      
-      <div class="mb-4">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Дата</th>
-              <th>К</th>
-              <th>Б</th>
-              <th>Ж</th>
-              <th>У</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for entry in dynamics_of_changes %}
-            <tr>
-              <td>{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}</td>
-              <td>{{ entry.total_calories|floatformat:2 }}</td>
-              <td>{{ entry.total_proteins|floatformat:2 }}</td>
-              <td>{{ entry.total_fats|floatformat:2 }}</td>
-              <td>{{ entry.total_carbohydrates|floatformat:2 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="5">Нет данных</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
       </div>
 
-      <div class="row g-4">
-        <div class="col-md-6">
-          <div class="chart-container">
-            <h3 class="chart-title">Калории</h3>
-            <div class="chart-canvas-wrapper">
-              <canvas id="caloriesChart"></canvas>
+      <!-- Dynamics Tab -->
+      <div class="tab-pane fade" id="dynamics" role="tabpanel" aria-labelledby="dynamics-tab">
+        <div class="mb-4">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>К</th>
+                <th>Б</th>
+                <th>Ж</th>
+                <th>У</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in dynamics_of_changes %}
+              <tr>
+                <td>{{ entry.date }}{{ entry.week }}{{ entry.month|date:"F Y" }}</td>
+                <td>{{ entry.total_calories|floatformat:2 }}</td>
+                <td>{{ entry.total_proteins|floatformat:2 }}</td>
+                <td>{{ entry.total_fats|floatformat:2 }}</td>
+                <td>{{ entry.total_carbohydrates|floatformat:2 }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5">Нет данных</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <h3 class="chart-title">Калории</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="caloriesChart"></canvas>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="chart-container">
-            <h3 class="chart-title">Белки</h3>
-            <div class="chart-canvas-wrapper">
-              <canvas id="proteinsChart"></canvas>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <h3 class="chart-title">Белки</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="proteinsChart"></canvas>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="chart-container">
-            <h3 class="chart-title">Жиры</h3>
-            <div class="chart-canvas-wrapper">
-              <canvas id="fatsChart"></canvas>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <h3 class="chart-title">Жиры</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="fatsChart"></canvas>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="chart-container">
-            <h3 class="chart-title">Углеводы</h3>
-            <div class="chart-canvas-wrapper">
-              <canvas id="carbohydratesChart"></canvas>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <h3 class="chart-title">Углеводы</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="carbohydratesChart"></canvas>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    {% else %}
-        <div>Нет данных</div>
-      {% endif %}
-    </div>
-
-  {% endblock %}
+  {% else %}
+    <div>Нет данных</div>
+  {% endif %}
+{% endblock %}

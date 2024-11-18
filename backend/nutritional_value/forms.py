@@ -67,7 +67,7 @@ class FilterAmountPerDayForm(forms.Form):
         ('month', 'по месяцам'),
     ]
     cut_size = forms.ChoiceField(
-        choices=CUT_SIZE_OPTIONS, label="Выберите вариант группировки",
+        choices=CUT_SIZE_OPTIONS, label="Вариант группировки",
         initial=CUT_SIZE_OPTIONS[0][0]
     )
     date_start = forms.DateField(
@@ -75,7 +75,7 @@ class FilterAmountPerDayForm(forms.Form):
         widget=forms.TextInput(attrs={
             'type': 'date'
         }),
-        label="От"
+        label="От (включительно)"
     )
     date_stop = forms.DateField(
         required=False,
