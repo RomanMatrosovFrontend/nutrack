@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -5,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from core.views import custom_forbidden_view
 from .forms import (
     CustomAuthenticationForm, CustomUserCreationForm,
-    EmailEditForm, PasswordEditForm,
+    PasswordEditForm, ProfileEditForm,
 )
 
 
@@ -59,23 +60,36 @@ def profile_edit(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user and not request.user.is_superuser:
         return custom_forbidden_view(request)
+
     if request.method == 'POST':
-        if 'email' in request.POST:
-            form = EmailEditForm(instance=user, data=request.POST)
+        if (
+            'email' in request.POST or
+            'first_name' in request.POST or
+            'last_name' in request.POST
+        ):
+            form = ProfileEditForm(request.POST, instance=user)
             if form.is_valid():
                 form.save()
-                return redirect('profile', username=username)
-        elif 'password' in request.POST:
+                messages.success(request, 'Профиль успешно обновлен')
+            else:
+                messages.error(request, 'Пожалуйста, исправьте ошибки в форме')
+                profile_form = form
+                password_form = PasswordEditForm()
+        if 'password1' in request.POST or 'password2' in request.POST:
             form = PasswordEditForm(instance=user, data=request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('login')
-    else:
-        email_form = EmailEditForm(instance=user)
-        password_form = PasswordEditForm()
+                messages.success(request, 'Пароль успешно изменен')
 
+            else:
+                messages.error(request, 'Пожалуйста, исправьте ошибки в форме')
+                profile_form = ProfileEditForm(instance=user)
+                password_form = form
+
+    profile_form = ProfileEditForm(instance=user)
+    password_form = PasswordEditForm()
     return render(request, 'users/profile_edit.html', {
-        'email_form': email_form,
+        'profile_form': profile_form,
         'password_form': password_form,
         'user': user
     })
