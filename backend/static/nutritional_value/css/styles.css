@@ -529,3 +529,130 @@ small.form-text {
 .add-ingredient-form input[type="checkbox"]:hover:not(:checked) {
     background-color: #e9ecef;
 }
+
+/* Ingredient detail page styles */
+.ingredient-detail {
+    background-color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.ingredient-detail .card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.nutritional-info .nutrition-label {
+    color: #6c757d;
+    font-weight: 500;
+    display: inline-block;
+    width: 100px;
+}
+
+.nutritional-info .nutrition-value {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.ingredient-description {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.ingredient-description h2 {
+    color: #2c3e50;
+}
+
+.verified-badge .badge {
+    font-size: 0.875rem;
+    padding: 0.5em 1em;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.action-buttons p {
+    margin: 0;
+    margin-left: auto;
+    color: #6c757d;
+}
+
+.action-buttons p a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.action-buttons p a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb {
+    background-color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Profile page styles */
+.profile-detail {
+    background-color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-detail .card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.profile-info .profile-label {
+    color: #6c757d;
+    font-weight: 500;
+    display: inline-block;
+    width: 150px;
+}
+
+.profile-info .profile-value {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.profile-stats {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.profile-stats h2 {
+    color: #2c3e50;
+}
+
+.profile-stats .profile-label {
+    color: #6c757d;
+    font-weight: 500;
+    display: inline-block;
+    width: 180px;
+}
+
+.profile-stats .profile-value {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.profile-badges .badge {
+    font-size: 0.875rem;
+    padding: 0.5em 1em;
+}

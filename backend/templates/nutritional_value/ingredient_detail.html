@@ -1,36 +1,81 @@
 {% extends "common/base.html" %}
 
 {% block content %}
-  <h1>Ингредент: {{ ingredient.title }}</h1>
-    {% if ingredient.description %}
-        <div>
-            <p>
-                Описание: {{ ingredient.description }}
-            </p>
+<div class="container">
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'ingredient_list' %}">Список ингредиентов</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ ingredient.title }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="card ingredient-detail mb-4">
+    <div class="card-body">
+      <h1 class="card-title mb-4">{{ ingredient.title }}</h1>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="nutritional-info">
+            <h2 class="h5 mb-3">Пищевая ценность на 100г:</h2>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <span class="nutrition-label">Калории:</span>
+                <span class="nutrition-value">{{ ingredient.calorie_content }} ккал</span>
+              </li>
+              <li class="mb-2">
+                <span class="nutrition-label">Белки:</span>
+                <span class="nutrition-value">{{ ingredient.proteins }}г</span>
+              </li>
+              <li class="mb-2">
+                <span class="nutrition-label">Жиры:</span>
+                <span class="nutrition-value">{{ ingredient.fats }}г</span>
+              </li>
+              <li class="mb-2">
+                <span class="nutrition-label">Углеводы:</span>
+                <span class="nutrition-value">{{ ingredient.carbohydrates }}г</span>
+              </li>
+            </ul>
+          </div>
         </div>
-    {% endif %}
-    <div>
-        <p>Калорийность: {{ ingredient.calorie_content }} </p>
+        
+        <div class="col-md-6">
+          {% if ingredient.description %}
+          <div class="ingredient-description">
+            <h2 class="h5 mb-3">Описание:</h2>
+            <p class="mb-0">{{ ingredient.description }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if ingredient.has_animal_proteins %}
+      <div class="verified-badge mt-3">
+        <span class="badge bg-danger">
+          <i class="bi bi-check-circle-fill me-1"></i>Животного происхождения
+        </span>
+      </div>
+      {% else %}
+      <div class="verified-badge mt-3">
+        <span class="badge bg-success">
+          <i class="bi bi-check-circle-fill me-1"></i>Растительного происхождения
+        </span>
+      </div>
+      {% endif %}
     </div>
-    <div>
-        <p>Белки: {{ ingredient.proteins }} </p>
-        <p>Жиры: {{ ingredient.fats }} </p>
-        <p>Углеводы: {{ ingredient.carbohydrates }} </p>
-    </div>
-    <div>
-        {% if ingredient.has_animal_proteins %}
-            <p>Животного происхождения</p>
-        {% else %}
-            <p>Растительного происхождения</p>        
-        {% endif %}
-    </div>
-    <div>
-        <p>Автор: <a href="{% url 'profile' ingredient.author.username %}">{{ ingredient.author }}</a> </p>
-    </div>
+  </div>
+
+  <div class="action-buttons">
     {% if request.user == ingredient.author or request.user.is_superuser %}
-        <div>
-            <a href="{% url 'ingredient_edit' ingredient.slug %}">Изменить</a>
-            <a href="{% url 'ingredient_delete' ingredient.slug %}">Удалить</a>
-        </div>
+    <a href="{% url 'ingredient_edit' ingredient.slug %}" class="btn btn-primary me-2">
+      <i class="bi bi-pencil-fill me-1"></i>Редактировать
+    </a>
+    <a href="{% url 'ingredient_delete' ingredient.slug %}" class="btn btn-danger">
+      <i class="bi bi-trash-fill me-1"></i>Удалить
+    </a>
     {% endif %}
+    <p>Автор: <a href="{% url 'profile' ingredient.author.username %}">{{ ingredient.author }}</a> </p>
+  </div>
+</div>
 {% endblock %}

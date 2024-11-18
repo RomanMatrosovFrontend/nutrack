@@ -1,9 +1,78 @@
 {% extends "common/base.html" %}
 
 {% block content %}
-  <h1>Пользователь {{ user.username }}</h1>
-  <p>Email: {{ user.email }}</p>
-  {% if user == request.user or request.user.is_superuser %}
-    <p><a href="{% url 'edit_profile' user.username %}">Редактировать</a></p>
+<div class="container">
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Профиль {{ profile.username }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="card profile-detail mb-4">
+    <div class="card-body">
+      <h1 class="card-title mb-4">{{ profile.username }}</h1>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="profile-info">
+            <h2 class="h5 mb-3">Информация о пользователе:</h2>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <span class="profile-label">Имя:</span>
+                <span class="profile-value">{{ profile.first_name }}</span>
+              </li>
+              <li class="mb-2">
+                <span class="profile-label">Фамилия:</span>
+                <span class="profile-value">{{ profile.last_name }}</span>
+              </li>
+              <li class="mb-2">
+                <span class="profile-label">Email:</span>
+                <span class="profile-value">{{ profile.email }}</span>
+              </li>
+              <li class="mb-2">
+                <span class="profile-label">Дата регистрации:</span>
+                <span class="profile-value">{{ profile.date_joined|date:"d.m.Y" }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="profile-stats bg-light p-4 rounded">
+            <h2 class="h5 mb-3">Статистика:</h2>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <span class="profile-label">Добавлено ингредиентов:</span>
+                <span class="profile-value">{{ profile.ingredients.count }}</span>
+              </li>
+              <li class="mb-2">
+                <span class="profile-label">Записей в дневнике:</span>
+                <span class="profile-value">{{ profile.amount_per_days.count }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {% if user == profile %}
+      <div class="profile-badges mt-3">
+        <span class="badge bg-primary">
+          <i class="bi bi-person-fill me-1"></i>Это ваш профиль
+        </span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user == profile %}
+  <div class="action-buttons">
+    <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+      <i class="bi bi-pencil-fill me-1"></i>Редактировать профиль
+    </a>
+  </div>
   {% endif %}
+</div>
 {% endblock %}
