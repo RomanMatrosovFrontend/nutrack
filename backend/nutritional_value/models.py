@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Ingredient(models.Model):
     title = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     description = models.TextField(blank=True, null=True)
 
     calorie_content = models.FloatField(validators=[MinValueValidator(0.0)])
@@ -23,9 +23,14 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['author', 'slug']),
+        ]
+
 
 class AmountPerDay(models.Model):
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     grams = models.FloatField(validators=[MinValueValidator(0.0)])
 
@@ -33,3 +38,9 @@ class AmountPerDay(models.Model):
 
     def __str__(self):
         return f"{self.date} - {self.ingredient.title} - {self.grams}g"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['author', 'date']),
+        ]
+        ordering = ['-date']
