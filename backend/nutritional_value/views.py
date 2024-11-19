@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
-
 from core.views import custom_forbidden_view
+
 from .forms import (
     AmountPerDayForm, FilterAmountPerDayForm,
     FilterIngredientForm, IngredientForm
@@ -14,12 +15,12 @@ from .utils import (
 
 
 def index(request):
-    """Функция отображения главной страницы"""
-    context = {
-        'num_ingredients': Ingredient.objects.all().count(),
-        'user': request.user
-    }
-    return render(request, 'nutritional_value/index.html', context,)
+    num_ingredients = cache.get('num_ingredients')
+    if num_ingredients is None:
+        num_ingredients = Ingredient.objects.count()
+        cache.set('num_ingredients', num_ingredients, 300)  # кэш на 5 минут
+    context = {'num_ingredients': num_ingredients}
+    return render(request, 'nutritional_value/index.html', context)
 
 
 @login_required
