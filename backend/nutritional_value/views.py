@@ -63,7 +63,7 @@ def ingredient_list(request):
 
 
 def ingredient_detail(request, ingredient_slug):
-    ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
+    ingredient = get_object_or_404(Ingredient.objects.select_related('author'), slug=ingredient_slug)
     return render(
         request, 'nutritional_value/ingredient_detail.html',
         {'ingredient': ingredient}
