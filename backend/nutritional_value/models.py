@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    title = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200, unique=True, db_index=True)
     slug = models.SlugField(unique=True, db_index=True)
     description = models.TextField(blank=True, null=True)
 
@@ -25,7 +25,7 @@ class Ingredient(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['author', 'slug']),
+            models.Index(fields=['author', 'title']),
         ]
 
 
