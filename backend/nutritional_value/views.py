@@ -47,7 +47,10 @@ def add_ingredient(request):
 
 def ingredient_list(request):
     form = FilterIngredientForm(request.GET or None)
-    cache_key = f'ingredients_list_{request.GET.get("search", "")}_author_{form.cleaned_data.get("author", "") if form.is_valid() else ""}'
+    cache_key = (
+        f'ingredients_list_{request.GET.get("search", "")}_author_'
+        f'{form.cleaned_data.get("author", "") if form.is_valid() else ""}'
+    )
     ingredients = cache.get(cache_key)
     if ingredients is None:
         ingredients = Ingredient.objects.select_related('author').all()
@@ -67,7 +70,8 @@ def ingredient_list(request):
 
 
 def ingredient_detail(request, ingredient_slug):
-    ingredient = get_object_or_404(Ingredient.objects.select_related('author'), slug=ingredient_slug)
+    ingredient = get_object_or_404(
+        Ingredient.objects.select_related('author'), slug=ingredient_slug)
     return render(
         request, 'nutritional_value/ingredient_detail.html',
         {'ingredient': ingredient}
@@ -76,7 +80,8 @@ def ingredient_detail(request, ingredient_slug):
 
 @login_required
 def ingredient_edit(request, ingredient_slug):
-    ingredient = get_object_or_404(Ingredient.objects.select_related('author'), slug=ingredient_slug)
+    ingredient = get_object_or_404(
+        Ingredient.objects.select_related('author'), slug=ingredient_slug)
     if request.user != ingredient.author and not request.user.is_superuser:
         return custom_forbidden_view(request)
     if request.method == 'POST':
@@ -97,7 +102,8 @@ def ingredient_edit(request, ingredient_slug):
 
 @login_required
 def ingredient_delete(request, ingredient_slug):
-    ingredient = get_object_or_404(Ingredient.objects.select_related('author'), slug=ingredient_slug)
+    ingredient = get_object_or_404(
+        Ingredient.objects.select_related('author'), slug=ingredient_slug)
     if request.user != ingredient.author and not request.user.is_superuser:
         return custom_forbidden_view(request)
     if request.method == 'POST':
@@ -134,7 +140,8 @@ def add_amount_per_day(request):
 @login_required
 def my_amount_per_day_list(request):
     form = FilterAmountPerDayForm(request.GET or None)
-    amounts = AmountPerDay.objects.select_related('ingredient', 'author').filter(author=request.user).order_by('date')
+    amounts = AmountPerDay.objects.select_related(
+        'ingredient', 'author').filter(author=request.user).order_by('date')
     context = {'form': form}
     dynamics_of_changes = None
     cut_size = 'day'
@@ -172,7 +179,8 @@ def my_amount_per_day_list(request):
 
 @login_required
 def amount_per_day_delete(request, id):
-    amount_per_day = get_object_or_404(AmountPerDay.objects.select_related('author', 'ingredient'), id=id)
+    amount_per_day = get_object_or_404(
+        AmountPerDay.objects.select_related('author', 'ingredient'), id=id)
     if request.user != amount_per_day.author and not request.user.is_superuser:
         return custom_forbidden_view(request)
     if request.method == 'POST':
