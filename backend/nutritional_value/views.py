@@ -72,7 +72,7 @@ def ingredient_detail(request, ingredient_slug):
 
 @login_required
 def ingredient_edit(request, ingredient_slug):
-    ingredient = get_object_or_404(Ingredient, slug=ingredient_slug)
+    ingredient = get_object_or_404(Ingredient.objects.select_related('author'), slug=ingredient_slug)
     if request.user != ingredient.author and not request.user.is_superuser:
         return custom_forbidden_view(request)
     if request.method == 'POST':
