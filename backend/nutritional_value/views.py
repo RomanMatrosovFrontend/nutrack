@@ -130,7 +130,7 @@ def add_amount_per_day(request):
 @login_required
 def my_amount_per_day_list(request):
     form = FilterAmountPerDayForm(request.GET or None)
-    amounts = AmountPerDay.objects.filter(author=request.user).order_by('date')
+    amounts = AmountPerDay.objects.select_related('ingredient', 'author').filter(author=request.user).order_by('date')
     context = {'form': form}
     dynamics_of_changes = None
     cut_size = 'day'
