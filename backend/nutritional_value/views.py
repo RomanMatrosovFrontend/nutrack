@@ -50,7 +50,7 @@ def ingredient_list(request):
     cache_key = f'ingredients_list_{request.GET.get("search", "")}_author_{form.cleaned_data.get("author", "") if form.is_valid() else ""}'
     ingredients = cache.get(cache_key)
     if ingredients is None:
-        ingredients = Ingredient.objects.all()
+        ingredients = Ingredient.objects.select_related('author').all()
     if form.is_valid() and form.cleaned_data['author']:
         ingredients = ingredients.filter(author=form.cleaned_data['author'])
     query = request.GET.get('search')
