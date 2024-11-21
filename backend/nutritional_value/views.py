@@ -168,7 +168,7 @@ def my_amount_per_day_list(request):
 
 @login_required
 def amount_per_day_delete(request, id):
-    amount_per_day = get_object_or_404(AmountPerDay, id=id)
+    amount_per_day = get_object_or_404(AmountPerDay.objects.select_related('author', 'ingredient'), id=id)
     if request.user != amount_per_day.author and not request.user.is_superuser:
         return custom_forbidden_view(request)
     if request.method == 'POST':
