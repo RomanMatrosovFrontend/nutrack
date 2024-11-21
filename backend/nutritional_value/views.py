@@ -18,7 +18,7 @@ def index(request):
     num_ingredients = cache.get('num_ingredients')
     if num_ingredients is None:
         num_ingredients = Ingredient.objects.count()
-        cache.set('num_ingredients', num_ingredients, 300)  # кэш на 5 минут
+        cache.set('num_ingredients', num_ingredients, 300)
     context = {'num_ingredients': num_ingredients}
     return render(request, 'nutritional_value/index.html', context)
 
@@ -47,12 +47,16 @@ def add_ingredient(request):
 
 def ingredient_list(request):
     form = FilterIngredientForm(request.GET or None)
-    ingredients = Ingredient.objects.all()
+    cache_key = f'ingredients_list_{request.GET.get("search", "")}_author_{form.cleaned_data.get("author", "") if form.is_valid() else ""}'
+    ingredients = cache.get(cache_key)
+    if ingredients is None:
+        ingredients = Ingredient.objects.all()
     if form.is_valid() and form.cleaned_data['author']:
         ingredients = ingredients.filter(author=form.cleaned_data['author'])
     query = request.GET.get('search')
     if query:
         ingredients = ingredients.filter(title__icontains=query)
+    cache.set(cache_key, ingredients, 300)
     paginator = Paginator(ingredients, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
